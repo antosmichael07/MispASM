@@ -1,191 +1,116 @@
 package main
 
-var register_cmp = [2][]byte{}
-
-var compare = [6]func(arg1 []byte, arg2 []byte, function *Function, index *int){
-	func(arg1 []byte, arg2 []byte, function *Function, index *int) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]) == convert_to_value[register_cmp[1][0]](register_cmp[1]) {
+var compare = [6]func([]byte, []byte, *function, *int, Program){
+	func(arg1 []byte, arg2 []byte, function *function, index *int, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p) == convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(arg1 []byte, arg2 []byte, function *Function, index *int) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]) != convert_to_value[register_cmp[1][0]](register_cmp[1]) {
+	func(arg1 []byte, arg2 []byte, function *function, index *int, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p) != convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(arg1 []byte, arg2 []byte, function *Function, index *int) {
-		if register_cmp[0][0] != t_reg {
-			compare_jg[register_cmp[0][0]](function, index, arg1, arg2)
+	func(arg1 []byte, arg2 []byte, function *function, index *int, p Program) {
+		if p.register_cmp[0][0] != t_reg {
+			compare_jg[p.register_cmp[0][0]](function, index, arg1, arg2, p)
 		} else {
-			compare_jg[register_cmp[0][1]%11](function, index, arg1, arg2)
+			compare_jg[p.register_cmp[0][1]%11](function, index, arg1, arg2, p)
 		}
 	},
-	func(arg1 []byte, arg2 []byte, function *Function, index *int) {
-		if register_cmp[0][0] != t_reg {
-			compare_jge[register_cmp[0][0]](function, index, arg1, arg2)
+	func(arg1 []byte, arg2 []byte, function *function, index *int, p Program) {
+		if p.register_cmp[0][0] != t_reg {
+			compare_jge[p.register_cmp[0][0]](function, index, arg1, arg2, p)
 		} else {
-			compare_jge[register_cmp[0][1]%11](function, index, arg1, arg2)
+			compare_jge[p.register_cmp[0][1]%11](function, index, arg1, arg2, p)
 		}
 	},
-	func(arg1 []byte, arg2 []byte, function *Function, index *int) {
-		if register_cmp[0][0] != t_reg {
-			compare_jl[register_cmp[0][0]](function, index, arg1, arg2)
+	func(arg1 []byte, arg2 []byte, function *function, index *int, p Program) {
+		if p.register_cmp[0][0] != t_reg {
+			compare_jl[p.register_cmp[0][0]](function, index, arg1, arg2, p)
 		} else {
-			compare_jl[register_cmp[0][1]%11](function, index, arg1, arg2)
+			compare_jl[p.register_cmp[0][1]%11](function, index, arg1, arg2, p)
 		}
 	},
-	func(arg1 []byte, arg2 []byte, function *Function, index *int) {
-		if register_cmp[0][0] != t_reg {
-			compare_jle[register_cmp[0][0]](function, index, arg1, arg2)
+	func(arg1 []byte, arg2 []byte, function *function, index *int, p Program) {
+		if p.register_cmp[0][0] != t_reg {
+			compare_jle[p.register_cmp[0][0]](function, index, arg1, arg2, p)
 		} else {
-			compare_jle[register_cmp[0][1]%11](function, index, arg1, arg2)
+			compare_jle[p.register_cmp[0][1]%11](function, index, arg1, arg2, p)
 		}
 	},
 }
 
-var compare_jg = [10]func(function *Function, index *int, arg1 []byte, arg2 []byte){
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int8) > convert_to_value[register_cmp[1][0]](register_cmp[1]).(int8) {
+var compare_jg = [10]func(*function, *int, []byte, []byte, Program){
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int8) > convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int8) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int16) > convert_to_value[register_cmp[1][0]](register_cmp[1]).(int16) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int16) > convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int16) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int32) > convert_to_value[register_cmp[1][0]](register_cmp[1]).(int32) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int32) > convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int32) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int64) > convert_to_value[register_cmp[1][0]](register_cmp[1]).(int64) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int64) > convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int64) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint8) > convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint8) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint8) > convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint8) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint16) > convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint16) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint16) > convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint16) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint32) > convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint32) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint32) > convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint32) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint64) > convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint64) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint64) > convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint64) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(float32) > convert_to_value[register_cmp[1][0]](register_cmp[1]).(float32) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(float32) > convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(float32) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(float64) > convert_to_value[register_cmp[1][0]](register_cmp[1]).(float64) {
-			*index = function.labels[arg1[1]]
-		} else {
-			*index = function.labels[arg2[1]]
-		}
-	},
-}
-
-var compare_jge = [10]func(function *Function, index *int, arg1 []byte, arg2 []byte){
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int8) >= convert_to_value[register_cmp[1][0]](register_cmp[1]).(int8) {
-			*index = function.labels[arg1[1]]
-		} else {
-			*index = function.labels[arg2[1]]
-		}
-	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int16) >= convert_to_value[register_cmp[1][0]](register_cmp[1]).(int16) {
-			*index = function.labels[arg1[1]]
-		} else {
-			*index = function.labels[arg2[1]]
-		}
-	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int32) >= convert_to_value[register_cmp[1][0]](register_cmp[1]).(int32) {
-			*index = function.labels[arg1[1]]
-		} else {
-			*index = function.labels[arg2[1]]
-		}
-	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int64) >= convert_to_value[register_cmp[1][0]](register_cmp[1]).(int64) {
-			*index = function.labels[arg1[1]]
-		} else {
-			*index = function.labels[arg2[1]]
-		}
-	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint8) >= convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint8) {
-			*index = function.labels[arg1[1]]
-		} else {
-			*index = function.labels[arg2[1]]
-		}
-	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint16) >= convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint16) {
-			*index = function.labels[arg1[1]]
-		} else {
-			*index = function.labels[arg2[1]]
-		}
-	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint32) >= convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint32) {
-			*index = function.labels[arg1[1]]
-		} else {
-			*index = function.labels[arg2[1]]
-		}
-	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint64) >= convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint64) {
-			*index = function.labels[arg1[1]]
-		} else {
-			*index = function.labels[arg2[1]]
-		}
-	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(float32) >= convert_to_value[register_cmp[1][0]](register_cmp[1]).(float32) {
-			*index = function.labels[arg1[1]]
-		} else {
-			*index = function.labels[arg2[1]]
-		}
-	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(float64) >= convert_to_value[register_cmp[1][0]](register_cmp[1]).(float64) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(float64) > convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(float64) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
@@ -193,72 +118,72 @@ var compare_jge = [10]func(function *Function, index *int, arg1 []byte, arg2 []b
 	},
 }
 
-var compare_jl = [10]func(function *Function, index *int, arg1 []byte, arg2 []byte){
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int8) < convert_to_value[register_cmp[1][0]](register_cmp[1]).(int8) {
+var compare_jge = [10]func(*function, *int, []byte, []byte, Program){
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int8) >= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int8) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int16) < convert_to_value[register_cmp[1][0]](register_cmp[1]).(int16) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int16) >= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int16) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int32) < convert_to_value[register_cmp[1][0]](register_cmp[1]).(int32) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int32) >= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int32) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int64) < convert_to_value[register_cmp[1][0]](register_cmp[1]).(int64) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int64) >= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int64) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint8) < convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint8) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint8) >= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint8) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint16) < convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint16) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint16) >= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint16) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint32) < convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint32) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint32) >= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint32) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint64) < convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint64) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint64) >= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint64) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(float32) < convert_to_value[register_cmp[1][0]](register_cmp[1]).(float32) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(float32) >= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(float32) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(float64) < convert_to_value[register_cmp[1][0]](register_cmp[1]).(float64) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(float64) >= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(float64) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
@@ -266,72 +191,145 @@ var compare_jl = [10]func(function *Function, index *int, arg1 []byte, arg2 []by
 	},
 }
 
-var compare_jle = [10]func(function *Function, index *int, arg1 []byte, arg2 []byte){
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int8) <= convert_to_value[register_cmp[1][0]](register_cmp[1]).(int8) {
+var compare_jl = [10]func(*function, *int, []byte, []byte, Program){
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int8) < convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int8) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int16) <= convert_to_value[register_cmp[1][0]](register_cmp[1]).(int16) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int16) < convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int16) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int32) <= convert_to_value[register_cmp[1][0]](register_cmp[1]).(int32) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int32) < convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int32) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(int64) <= convert_to_value[register_cmp[1][0]](register_cmp[1]).(int64) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int64) < convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int64) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint8) <= convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint8) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint8) < convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint8) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint16) <= convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint16) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint16) < convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint16) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint32) <= convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint32) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint32) < convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint32) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(uint64) <= convert_to_value[register_cmp[1][0]](register_cmp[1]).(uint64) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint64) < convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint64) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(float32) <= convert_to_value[register_cmp[1][0]](register_cmp[1]).(float32) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(float32) < convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(float32) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]
 		}
 	},
-	func(function *Function, index *int, arg1 []byte, arg2 []byte) {
-		if convert_to_value[register_cmp[0][0]](register_cmp[0]).(float64) <= convert_to_value[register_cmp[1][0]](register_cmp[1]).(float64) {
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(float64) < convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(float64) {
+			*index = function.labels[arg1[1]]
+		} else {
+			*index = function.labels[arg2[1]]
+		}
+	},
+}
+
+var compare_jle = [10]func(*function, *int, []byte, []byte, Program){
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int8) <= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int8) {
+			*index = function.labels[arg1[1]]
+		} else {
+			*index = function.labels[arg2[1]]
+		}
+	},
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int16) <= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int16) {
+			*index = function.labels[arg1[1]]
+		} else {
+			*index = function.labels[arg2[1]]
+		}
+	},
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int32) <= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int32) {
+			*index = function.labels[arg1[1]]
+		} else {
+			*index = function.labels[arg2[1]]
+		}
+	},
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(int64) <= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(int64) {
+			*index = function.labels[arg1[1]]
+		} else {
+			*index = function.labels[arg2[1]]
+		}
+	},
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint8) <= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint8) {
+			*index = function.labels[arg1[1]]
+		} else {
+			*index = function.labels[arg2[1]]
+		}
+	},
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint16) <= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint16) {
+			*index = function.labels[arg1[1]]
+		} else {
+			*index = function.labels[arg2[1]]
+		}
+	},
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint32) <= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint32) {
+			*index = function.labels[arg1[1]]
+		} else {
+			*index = function.labels[arg2[1]]
+		}
+	},
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(uint64) <= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(uint64) {
+			*index = function.labels[arg1[1]]
+		} else {
+			*index = function.labels[arg2[1]]
+		}
+	},
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(float32) <= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(float32) {
+			*index = function.labels[arg1[1]]
+		} else {
+			*index = function.labels[arg2[1]]
+		}
+	},
+	func(function *function, index *int, arg1 []byte, arg2 []byte, p Program) {
+		if convert_to_value[p.register_cmp[0][0]](p.register_cmp[0], p).(float64) <= convert_to_value[p.register_cmp[1][0]](p.register_cmp[1], p).(float64) {
 			*index = function.labels[arg1[1]]
 		} else {
 			*index = function.labels[arg2[1]]

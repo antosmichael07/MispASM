@@ -1,19 +1,19 @@
 package main
 
-var convert_to_value = [13]func([]byte) any{
-	func(data []byte) any { return byte_to_int8(data[1]) },
-	func(data []byte) any { return bytes_to_int16(data[1:]) },
-	func(data []byte) any { return bytes_to_int32(data[1:]) },
-	func(data []byte) any { return bytes_to_int64(data[1:]) },
-	func(data []byte) any { return byte_to_uint8(data[1]) },
-	func(data []byte) any { return bytes_to_uint16(data[1:]) },
-	func(data []byte) any { return bytes_to_uint32(data[1:]) },
-	func(data []byte) any { return bytes_to_uint64(data[1:]) },
-	func(data []byte) any { return bytes_to_float32(data[1:]) },
-	func(data []byte) any { return bytes_to_float64(data[1:]) },
-	func(data []byte) any { return bytes_to_string(data[1:]) },
-	func(data []byte) any { return register_get[data[1]](int(data[2])) },
-	func(data []byte) any { return get_const_value(data) },
+var convert_to_value = [13]func([]byte, Program) any{
+	func(data []byte, _ Program) any { return byte_to_int8(data[1]) },
+	func(data []byte, _ Program) any { return bytes_to_int16(data[1:]) },
+	func(data []byte, _ Program) any { return bytes_to_int32(data[1:]) },
+	func(data []byte, _ Program) any { return bytes_to_int64(data[1:]) },
+	func(data []byte, _ Program) any { return byte_to_uint8(data[1]) },
+	func(data []byte, _ Program) any { return bytes_to_uint16(data[1:]) },
+	func(data []byte, _ Program) any { return bytes_to_uint32(data[1:]) },
+	func(data []byte, _ Program) any { return bytes_to_uint64(data[1:]) },
+	func(data []byte, _ Program) any { return bytes_to_float32(data[1:]) },
+	func(data []byte, _ Program) any { return bytes_to_float64(data[1:]) },
+	func(data []byte, _ Program) any { return bytes_to_string(data[1:]) },
+	func(data []byte, p Program) any { return register_get[data[1]](int(data[2]), p) },
+	func(data []byte, p Program) any { return p.get_const_value(data) },
 }
 
 func byte_to_int8(b byte) int8 {

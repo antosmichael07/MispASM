@@ -10,16 +10,16 @@ const (
 
 var calls = [1]func([]byte, []byte){}
 
-func init_calls() {
+func init_calls(p *Program) {
 	calls[printf] = func(arg1 []byte, arg2 []byte) {
-		fmt.Print(sprintf_stack())
+		fmt.Print(sprintf_stack(p))
 	}
 }
 
-func sprintf_stack() string {
+func sprintf_stack(p *Program) string {
 	msg := ""
 	continu := false
-	for _, v := range stack {
+	for _, v := range p.stack {
 		if !continu {
 			msg = v.data.(string)
 			continu = true

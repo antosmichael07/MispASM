@@ -5,15 +5,9 @@ import (
 	"os"
 )
 
-var should_close = false
-
 func main() {
-	data := read_exec(os.Args[1])
-	global, funcs := load_program(data)
-	init_instructions(&funcs)
-	init_calls()
-
-	run_function(funcs[global])
+	program := NewProgram(read_exec(os.Args[1]))
+	program.Run()
 }
 
 func read_exec(location string) (data []byte) {

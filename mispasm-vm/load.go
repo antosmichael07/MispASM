@@ -1,6 +1,6 @@
 package main
 
-func load_program(data []byte) (global string, funcs map[string]Function) {
+func load_program(data []byte) (global string, funcs map[string]function, constants []constant) {
 	i := 0
 	for ; data[i] != 255; i++ {
 		const_name := []byte{}
@@ -24,9 +24,10 @@ func load_program(data []byte) (global string, funcs map[string]Function) {
 			}
 		}
 
-		constants = append(constants, Constant{Name: const_name, Value: data[i : i+type_size+1]})
+		constants = append(constants, constant{name: const_name, value: data[i : i+type_size+1]})
 		i += type_size
 	}
 
-	return get_functions(data[i+1:])
+	global, funcs = get_functions(data[i+1:])
+	return global, funcs, constants
 }

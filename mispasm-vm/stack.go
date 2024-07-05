@@ -1,21 +1,19 @@
 package main
 
-type Stack struct {
+type stack struct {
 	name  byte
 	index int
 	data  any
 }
 
-var stack = []Stack{}
-
-func stack_push(reg byte, index int) {
-	stack = append(stack, Stack{reg, index, register_get[reg](index)})
+func stack_push(reg byte, index int, p *Program) {
+	p.stack = append(p.stack, stack{reg, index, register_get[reg](index, *p)})
 }
 
-func stack_pop(reg byte, index int) {
-	for i, v := range stack {
+func stack_pop(reg byte, index int, p *Program) {
+	for i, v := range p.stack {
 		if v.name == reg && v.index == index {
-			stack = append(stack[:i], stack[i+1:]...)
+			p.stack = append(p.stack[:i], p.stack[i+1:]...)
 			break
 		}
 	}
