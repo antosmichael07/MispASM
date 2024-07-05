@@ -13,6 +13,7 @@ const (
 	t_float64
 	t_string
 	t_reg
+	t_const
 )
 
-var type_sizes = []byte{1, 2, 4, 8, 1, 2, 4, 8, 4, 8, 0, 2}
+var type_sizes = []byte{1, 2, 4, 8, 1, 2, 4, 8, 4, 8, 0, 2, 0}

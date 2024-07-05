@@ -1,6 +1,6 @@
 package main
 
-var convert_to_value = [12]func([]byte) any{
+var convert_to_value = [13]func([]byte) any{
 	func(data []byte) any { return byte_to_int8(data[1]) },
 	func(data []byte) any { return bytes_to_int16(data[1:]) },
 	func(data []byte) any { return bytes_to_int32(data[1:]) },
@@ -13,6 +13,7 @@ var convert_to_value = [12]func([]byte) any{
 	func(data []byte) any { return bytes_to_float64(data[1:]) },
 	func(data []byte) any { return bytes_to_string(data[1:]) },
 	func(data []byte) any { return register_get[data[1]](int(data[2])) },
+	func(data []byte) any { return get_const_value(data) },
 }
 
 func byte_to_int8(b byte) int8 {

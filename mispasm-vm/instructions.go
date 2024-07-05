@@ -108,3 +108,42 @@ func init_instructions(funcs *map[string]Function) {
 		should_close = true
 	}
 }
+
+func get_args(f_instructions []byte, i int) (arg1 []byte, arg2 []byte, is_arg1 bool, is_arg2 bool, arg_size int) {
+	offset := 0
+	if arg_sizes[f_instructions[i]] >= 1 {
+		is_arg1 = true
+		if f_instructions[i+1] == t_string || f_instructions[i+1] == t_const {
+			for j := i + 1; j < len(f_instructions); j++ {
+				if f_instructions[j] == 0 {
+					offset = j + 1
+					arg_size = j - i
+					arg1 = f_instructions[i+1 : j+1]
+					break
+				}
+			}
+		} else {
+			offset = i + int(type_sizes[f_instructions[i+1]]) + 2
+			arg_size = int(type_sizes[f_instructions[i+1]] + 1)
+			arg1 = f_instructions[i+1 : offset]
+		}
+	}
+
+	if arg_sizes[f_instructions[i]] >= 2 {
+		is_arg2 = true
+		if f_instructions[offset] == t_string || f_instructions[offset] == t_const {
+			for j := offset; j < len(f_instructions); j++ {
+				if f_instructions[j] == 0 {
+					arg_size = j - i
+					arg2 = f_instructions[offset : j+1]
+					break
+				}
+			}
+		} else {
+			arg_size = offset + int(type_sizes[f_instructions[offset]]) - i
+			arg2 = f_instructions[offset : offset+int(type_sizes[f_instructions[offset]])+1]
+		}
+	}
+
+	return arg1, arg2, is_arg1, is_arg2, arg_size
+}
