@@ -32,7 +32,7 @@ var add_math_operation_reg = [10]func(any, any, *Program){
 		register_set[rllf](0, val1.(float64)+val2.(float64), p)
 	},
 }
-var add_math_operation = [13]func([]byte, []byte, *Program){
+var add_math_operation = [12]func([]byte, []byte, *Program){
 	func(arg1 []byte, arg2 []byte, p *Program) {
 		if arg2[0] != t_reg {
 			register_set[rbi](0, byte_to_int8(arg1[1])+byte_to_int8(arg2[1]), p)
@@ -104,7 +104,6 @@ var add_math_operation = [13]func([]byte, []byte, *Program){
 		}
 	},
 	func(_ []byte, _ []byte, _ *Program) {},
-	func(_ []byte, _ []byte, _ *Program) {},
 	func(arg1 []byte, arg2 []byte, p *Program) {
 		add_math_operation_reg[arg1[1]%11](convert_to_value[arg1[0]](arg1, *p), convert_to_value[arg2[0]](arg2, *p), p)
 	},
@@ -143,7 +142,7 @@ var sub_math_operation_reg = [10]func(any, any, *Program){
 	},
 }
 
-var sub_math_operation = [13]func([]byte, []byte, *Program){
+var sub_math_operation = [12]func([]byte, []byte, *Program){
 	func(arg1 []byte, arg2 []byte, p *Program) {
 		if arg2[0] != t_reg {
 			register_set[rbi](0, byte_to_int8(arg1[1])-byte_to_int8(arg2[1]), p)
@@ -215,7 +214,6 @@ var sub_math_operation = [13]func([]byte, []byte, *Program){
 		}
 	},
 	func(_ []byte, _ []byte, _ *Program) {},
-	func(_ []byte, _ []byte, _ *Program) {},
 	func(arg1 []byte, arg2 []byte, p *Program) {
 		sub_math_operation_reg[arg1[1]%11](convert_to_value[arg1[0]](arg1, *p), convert_to_value[arg2[0]](arg2, *p), p)
 	},
@@ -254,7 +252,7 @@ var mul_math_operation_reg = [10]func(any, any, *Program){
 	},
 }
 
-var mul_math_operation = [13]func([]byte, []byte, *Program){
+var mul_math_operation = [12]func([]byte, []byte, *Program){
 	func(arg1 []byte, arg2 []byte, p *Program) {
 		if arg2[0] != t_reg {
 			register_set[rbi](0, byte_to_int8(arg1[1])*byte_to_int8(arg2[1]), p)
@@ -326,7 +324,6 @@ var mul_math_operation = [13]func([]byte, []byte, *Program){
 		}
 	},
 	func(_ []byte, _ []byte, _ *Program) {},
-	func(_ []byte, _ []byte, _ *Program) {},
 	func(arg1 []byte, arg2 []byte, p *Program) {
 		mul_math_operation_reg[arg1[1]%11](convert_to_value[arg1[0]](arg1, *p), convert_to_value[arg2[0]](arg2, *p), p)
 	},
@@ -365,7 +362,7 @@ var div_math_operation_reg = [10]func(any, any, *Program){
 	},
 }
 
-var div_math_operation = [13]func([]byte, []byte, *Program){
+var div_math_operation = [12]func([]byte, []byte, *Program){
 	func(arg1 []byte, arg2 []byte, p *Program) {
 		if arg2[0] != t_reg {
 			register_set[rbi](0, byte_to_int8(arg1[1])/byte_to_int8(arg2[1]), p)
@@ -437,7 +434,6 @@ var div_math_operation = [13]func([]byte, []byte, *Program){
 		}
 	},
 	func(_ []byte, _ []byte, _ *Program) {},
-	func(_ []byte, _ []byte, _ *Program) {},
 	func(arg1 []byte, arg2 []byte, p *Program) {
 		div_math_operation_reg[arg1[1]%11](convert_to_value[arg1[0]](arg1, *p), convert_to_value[arg2[0]](arg2, *p), p)
 	},
@@ -476,7 +472,7 @@ var mod_math_operation_reg = [10]func(any, any, *Program){
 	},
 }
 
-var mod_math_operation = [13]func([]byte, []byte, *Program){
+var mod_math_operation = [12]func([]byte, []byte, *Program){
 	func(arg1 []byte, arg2 []byte, p *Program) {
 		if arg2[0] != t_reg {
 			register_set[rbi](0, byte_to_int8(arg1[1])%byte_to_int8(arg2[1]), p)
@@ -547,7 +543,6 @@ var mod_math_operation = [13]func([]byte, []byte, *Program){
 			register_set[rllf](0, float64(int(bytes_to_float64(arg1[1:]))%int(register_get[arg2[1]](int(arg2[2]), *p).(float64))), p)
 		}
 	},
-	func(_ []byte, _ []byte, _ *Program) {},
 	func(_ []byte, _ []byte, _ *Program) {},
 	func(arg1 []byte, arg2 []byte, p *Program) {
 		mod_math_operation_reg[arg1[1]%11](convert_to_value[arg1[0]](arg1, *p), convert_to_value[arg2[0]](arg2, *p), p)

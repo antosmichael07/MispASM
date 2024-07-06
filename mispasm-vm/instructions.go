@@ -25,9 +25,15 @@ const (
 	ret
 	def
 	set
+	and
+	or
+	xor
+	shr
+	shl
+	not
 )
 
-var arg_sizes = []byte{2, 2, 1, 2, 2, 1, 1, 1, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0, 2}
+var arg_sizes = []byte{2, 2, 1, 2, 2, 1, 1, 1, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0, 2, 2, 2, 2, 2, 2, 1}
 
 func (p *Program) init_instructions() {
 	p.instructions[add] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
@@ -111,6 +117,24 @@ func (p *Program) init_instructions() {
 	}
 	p.instructions[set] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
 		p.set_var_value(arg1, arg2)
+	}
+	p.instructions[and] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+		and_bitwise_operation[arg1[0]](arg1, arg2, p)
+	}
+	p.instructions[or] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+		or_bitwise_operation[arg1[0]](arg1, arg2, p)
+	}
+	p.instructions[xor] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+		xor_bitwise_operation[arg1[0]](arg1, arg2, p)
+	}
+	p.instructions[shr] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+		shr_bitwise_operation[arg1[0]](arg1, arg2, p)
+	}
+	p.instructions[shl] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+		shl_bitwise_operation[arg1[0]](arg1, arg2, p)
+	}
+	p.instructions[not] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
+		not_bitwise_operation[arg1[0]](arg1, p)
 	}
 }
 
