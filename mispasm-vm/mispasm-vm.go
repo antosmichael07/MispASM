@@ -40,7 +40,7 @@ func NewProgram(data []byte) Program {
 }
 
 func (program *Program) Run() {
-	program.load_program(program.data)
+	program.load_program()
 	program.init_instructions()
 	program.init_calls()
 
