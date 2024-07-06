@@ -29,34 +29,32 @@ const (
 
 var arg_sizes = []byte{2, 2, 1, 2, 2, 1, 1, 1, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0, 2}
 
-var instructions = [24]func([]byte, []byte, *function, *int, *int){}
-
-func init_instructions(p *Program, should_close *bool) {
-	instructions[add] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+func (p *Program) init_instructions() {
+	p.instructions[add] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
 		add_math_operation[arg1[0]](arg1, arg2, p)
 	}
-	instructions[sub] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+	p.instructions[sub] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
 		sub_math_operation[arg1[0]](arg1, arg2, p)
 	}
-	instructions[fcal] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
-		run_function(p.funcs[string(arg1[1:len(arg1)-1])], should_close)
+	p.instructions[fcal] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
+		run_function(p.instructions, p.funcs[string(arg1[1:len(arg1)-1])], &p.should_close)
 	}
-	instructions[mul] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+	p.instructions[mul] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
 		mul_math_operation[arg1[0]](arg1, arg2, p)
 	}
-	instructions[div] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+	p.instructions[div] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
 		div_math_operation[arg1[0]](arg1, arg2, p)
 	}
-	instructions[call] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
-		calls[arg1[1]]([]byte{}, []byte{})
+	p.instructions[call] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
+		p.calls[arg1[1]]([]byte{}, []byte{})
 	}
-	instructions[push] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
+	p.instructions[push] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
 		stack_push(arg1[1], int(arg1[2]), p)
 	}
-	instructions[pop] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
+	p.instructions[pop] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
 		stack_pop(arg1[1], int(arg1[2]), p)
 	}
-	instructions[mov] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+	p.instructions[mov] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
 		if arg2[0] < t_reg {
 			register_force_set[arg2[0]][arg1[1]](arg1[2], convert_to_value[arg2[0]](arg2, *p), p)
 		} else if arg2[0] == t_reg {
@@ -66,52 +64,52 @@ func init_instructions(p *Program, should_close *bool) {
 			register_force_set[arg2[1]][arg1[1]](arg1[2], convert_to_value[val[0]](val, *p), p)
 		}
 	}
-	instructions[label] = func(_ []byte, _ []byte, _ *function, _ *int, _ *int) {}
-	instructions[jmp] = func(arg1 []byte, _ []byte, _ *function, i *int, arg_size *int) {
+	p.instructions[label] = func(_ []byte, _ []byte, _ *function, _ *int, _ *int) {}
+	p.instructions[jmp] = func(arg1 []byte, _ []byte, _ *function, i *int, arg_size *int) {
 		*i = int(arg1[1])
 		*arg_size = 0
 	}
-	instructions[mod] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+	p.instructions[mod] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
 		mod_math_operation[arg1[0]](arg1, arg2, p)
 	}
-	instructions[cmp] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+	p.instructions[cmp] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
 		p.register_cmp[0] = arg1
 		p.register_cmp[1] = arg2
 	}
-	instructions[je] = func(arg1 []byte, arg2 []byte, function *function, i *int, arg_size *int) {
+	p.instructions[je] = func(arg1 []byte, arg2 []byte, function *function, i *int, arg_size *int) {
 		compare[0](arg1, arg2, function, i, *p)
 		*arg_size = 0
 	}
-	instructions[jne] = func(arg1 []byte, arg2 []byte, function *function, i *int, arg_size *int) {
+	p.instructions[jne] = func(arg1 []byte, arg2 []byte, function *function, i *int, arg_size *int) {
 		compare[1](arg1, arg2, function, i, *p)
 		*arg_size = 0
 	}
-	instructions[jg] = func(arg1 []byte, arg2 []byte, function *function, i *int, arg_size *int) {
+	p.instructions[jg] = func(arg1 []byte, arg2 []byte, function *function, i *int, arg_size *int) {
 		compare[2](arg1, arg2, function, i, *p)
 		*arg_size = 0
 	}
-	instructions[jge] = func(arg1 []byte, arg2 []byte, function *function, i *int, arg_size *int) {
+	p.instructions[jge] = func(arg1 []byte, arg2 []byte, function *function, i *int, arg_size *int) {
 		compare[3](arg1, arg2, function, i, *p)
 		*arg_size = 0
 	}
-	instructions[jl] = func(arg1 []byte, arg2 []byte, function *function, i *int, arg_size *int) {
+	p.instructions[jl] = func(arg1 []byte, arg2 []byte, function *function, i *int, arg_size *int) {
 		compare[4](arg1, arg2, function, i, *p)
 		*arg_size = 0
 	}
-	instructions[jle] = func(arg1 []byte, arg2 []byte, function *function, i *int, arg_size *int) {
+	p.instructions[jle] = func(arg1 []byte, arg2 []byte, function *function, i *int, arg_size *int) {
 		compare[5](arg1, arg2, function, i, *p)
 		*arg_size = 0
 	}
-	instructions[inc] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
+	p.instructions[inc] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
 		inc_math_operation[arg1[1]](p)
 	}
-	instructions[dec] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
+	p.instructions[dec] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
 		dec_math_operation[arg1[1]](p)
 	}
-	instructions[def] = func(_ []byte, _ []byte, _ *function, _ *int, _ *int) {
-		*should_close = true
+	p.instructions[def] = func(_ []byte, _ []byte, _ *function, _ *int, _ *int) {
+		p.should_close = true
 	}
-	instructions[set] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+	p.instructions[set] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
 		p.set_var_value(arg1, arg2)
 	}
 }

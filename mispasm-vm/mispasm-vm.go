@@ -1,6 +1,7 @@
 package main
 
 type Program struct {
+	should_close   bool
 	data           []byte
 	global         string
 	funcs          map[string]function
@@ -30,6 +31,8 @@ type Program struct {
 	register_rs    [256]string
 	register_cmp   [2][]byte
 	stack          []stack
+	instructions   [24]func([]byte, []byte, *function, *int, *int)
+	calls          [1]func([]byte, []byte)
 }
 
 func NewProgram(data []byte) Program {
@@ -37,10 +40,9 @@ func NewProgram(data []byte) Program {
 }
 
 func (program *Program) Run() {
-	should_close := false
-	program.global, program.funcs, program.constants, program.variables = load_program(program.data)
-	init_instructions(program, &should_close)
-	init_calls(program)
+	program.load_program(program.data)
+	program.init_instructions()
+	program.init_calls()
 
-	run_function(program.funcs[program.global], &should_close)
+	run_function(program.instructions, program.funcs[program.global], &program.should_close)
 }

@@ -8,10 +8,8 @@ const (
 	print byte = iota
 )
 
-var calls = [1]func([]byte, []byte){}
-
-func init_calls(p *Program) {
-	calls[print] = func(arg1 []byte, arg2 []byte) {
+func (p *Program) init_calls() {
+	p.calls[print] = func(arg1 []byte, arg2 []byte) {
 		fmt.Print(sprint_stack(p))
 	}
 }
