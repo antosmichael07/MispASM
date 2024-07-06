@@ -24,11 +24,12 @@ const (
 	dec
 	ret
 	def
+	set
 )
 
-var arg_sizes = []byte{2, 2, 1, 2, 2, 1, 1, 1, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0}
+var arg_sizes = []byte{2, 2, 1, 2, 2, 1, 1, 1, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0, 2}
 
-var instructions = [23]func([]byte, []byte, *function, *int, *int){}
+var instructions = [24]func([]byte, []byte, *function, *int, *int){}
 
 func init_instructions(p *Program, should_close *bool) {
 	instructions[add] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
@@ -56,10 +57,13 @@ func init_instructions(p *Program, should_close *bool) {
 		stack_pop(arg1[1], int(arg1[2]), p)
 	}
 	instructions[mov] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
-		if arg2[0] != t_reg {
+		if arg2[0] < t_reg {
 			register_force_set[arg2[0]][arg1[1]](arg1[2], convert_to_value[arg2[0]](arg2, *p), p)
-		} else {
+		} else if arg2[0] == t_reg {
 			register_force_set[arg2[1]%11][arg1[1]](arg1[2], convert_to_value[arg2[0]](arg2, *p), p)
+		} else {
+			val := convert_to_value[arg2[0]](arg2, *p).([]byte)
+			register_force_set[arg2[1]][arg1[1]](arg1[2], convert_to_value[val[0]](val, *p), p)
 		}
 	}
 	instructions[label] = func(_ []byte, _ []byte, _ *function, _ *int, _ *int) {}
@@ -107,15 +111,21 @@ func init_instructions(p *Program, should_close *bool) {
 	instructions[def] = func(_ []byte, _ []byte, _ *function, _ *int, _ *int) {
 		*should_close = true
 	}
+	instructions[set] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
+		p.set_var_value(arg1, arg2)
+	}
 }
 
 func get_args(f_instructions []byte, i int) (arg1 []byte, arg2 []byte, is_arg1 bool, is_arg2 bool, arg_size int) {
 	offset := 0
 	if arg_sizes[f_instructions[i]] >= 1 {
 		is_arg1 = true
-		if f_instructions[i+1] == t_string || f_instructions[i+1] == t_const {
+		if f_instructions[i+1] == t_string || f_instructions[i+1] >= t_const {
 			for j := i + 1; j < len(f_instructions); j++ {
 				if f_instructions[j] == 0 {
+					if j == i+2 && f_instructions[i+1] >= t_const {
+						continue
+					}
 					offset = j + 1
 					arg_size = j - i
 					arg1 = f_instructions[i+1 : j+1]
@@ -131,9 +141,12 @@ func get_args(f_instructions []byte, i int) (arg1 []byte, arg2 []byte, is_arg1 b
 
 	if arg_sizes[f_instructions[i]] >= 2 {
 		is_arg2 = true
-		if f_instructions[offset] == t_string || f_instructions[offset] == t_const {
+		if f_instructions[offset] == t_string || f_instructions[offset] >= t_const {
 			for j := offset; j < len(f_instructions); j++ {
 				if f_instructions[j] == 0 {
+					if j == offset+1 && f_instructions[offset] >= t_const {
+						continue
+					}
 					arg_size = j - i
 					arg2 = f_instructions[offset : j+1]
 					break

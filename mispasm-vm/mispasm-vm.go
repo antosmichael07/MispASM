@@ -5,6 +5,7 @@ type Program struct {
 	global         string
 	funcs          map[string]function
 	constants      []constant
+	variables      []variable
 	register_bi    [256]int8
 	register_si    [256]int16
 	register_li    [256]int32
@@ -37,7 +38,7 @@ func NewProgram(data []byte) Program {
 
 func (program *Program) Run() {
 	should_close := false
-	program.global, program.funcs, program.constants = load_program(program.data)
+	program.global, program.funcs, program.constants, program.variables = load_program(program.data)
 	init_instructions(program, &should_close)
 	init_calls(program)
 

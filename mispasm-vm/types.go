@@ -14,6 +14,7 @@ const (
 	t_string
 	t_reg
 	t_const
+	t_var
 )
 
-var type_sizes = []byte{1, 2, 4, 8, 1, 2, 4, 8, 4, 8, 0, 2, 0}
+var type_sizes = []byte{1, 2, 4, 8, 1, 2, 4, 8, 4, 8, 0, 2, 0, 0}

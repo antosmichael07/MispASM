@@ -75,7 +75,7 @@ var register_get = [22]func(int, Program) any{
 	func(index int, p Program) any { return p.register_rs[index] },
 }
 
-var register_force_set = [13][22]func(byte, any, *Program){
+var register_force_set = [11][22]func(byte, any, *Program){
 	{
 		func(index byte, data any, p *Program) { p.register_bi[index] = data.(int8) },
 		func(index byte, data any, p *Program) { p.register_si[index] = int16(data.(int8)) },
@@ -339,74 +339,5 @@ var register_force_set = [13][22]func(byte, any, *Program){
 		func(index byte, data any, p *Program) { p.register_rlf[index] = float32(data.(string)[0]) },
 		func(index byte, data any, p *Program) { p.register_rllf[index] = float64(data.(string)[0]) },
 		func(index byte, data any, p *Program) { p.register_rs[index] = data.(string) },
-	},
-	{},
-	{
-		func(index byte, data any, p *Program) {
-			p.register_bi[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(int8)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_si[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(int16)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_li[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(int32)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_lli[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(int64)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_bui[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(uint8)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_sui[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(uint16)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_lui[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(uint32)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_llui[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(uint64)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_lf[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(float32)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_llf[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(float64)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_s[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(string)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_rbi[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(int8)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_rsi[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(int16)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_rli[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(int32)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_rlli[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(int64)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_rbui[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(uint8)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_rsui[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(uint16)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_rlui[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(uint32)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_rllui[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(uint64)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_rlf[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(float32)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_rllf[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(float64)
-		},
-		func(index byte, data any, p *Program) {
-			p.register_rs[index] = convert_to_value[data.([]byte)[0]](data.([]byte), *p).(string)
-		},
 	},
 }
