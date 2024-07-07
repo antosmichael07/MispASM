@@ -3,5 +3,10 @@ global _start
 _start
     mov r-s-0 s-HelloWorld!
     push r-s-0
+
     call u8-0
+
     pop r-s-0
+
+    label
+    jmp u8-0

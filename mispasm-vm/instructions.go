@@ -71,8 +71,8 @@ func (p *Program) init_instructions() {
 		}
 	}
 	p.instructions[label] = func(_ []byte, _ []byte, _ *function, _ *int, _ *int) {}
-	p.instructions[jmp] = func(arg1 []byte, _ []byte, _ *function, i *int, arg_size *int) {
-		*i = int(arg1[1])
+	p.instructions[jmp] = func(arg1 []byte, _ []byte, function *function, i *int, arg_size *int) {
+		*i = function.labels[int(arg1[1])]
 		*arg_size = 0
 	}
 	p.instructions[mod] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
