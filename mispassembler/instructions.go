@@ -1,5 +1,7 @@
 package main
 
+import "strings"
+
 var instructions = map[string]byte{
 	"add":   0,
 	"sub":   1,
@@ -31,4 +33,12 @@ var instructions = map[string]byte{
 	"shr":   27,
 	"shl":   28,
 	"not":   29,
+}
+
+func instruction_to_bytes(line []string) []byte {
+	instruction := []byte{instructions[line[0]]}
+	for i := 1; i < len(line); i++ {
+		instruction = append(append(instruction, types[line[i][:strings.Index(line[i], "-")]]), value_to_byte[types[line[i][:strings.Index(line[i], "-")]]](line[i][strings.Index(line[i], "-")+1:])...)
+	}
+	return instruction
 }

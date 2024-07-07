@@ -25,6 +25,7 @@ const (
 
 )
 */
+
 var types = map[string]byte{
 	"i8":  0,
 	"i16": 1,

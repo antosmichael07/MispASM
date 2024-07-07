@@ -9,8 +9,13 @@ func get_header(lines [][]string) []byte {
 	variables := []byte{}
 	global := []byte{}
 
+	is_const := false
+	is_var := false
+
 	for i := range lines {
 		if lines[i][0] == "const:" {
+			constants = []byte{}
+			is_const = true
 			i++
 			for ; lines[i][0] != "var:" && lines[i][0] != "global"; i++ {
 				c_type := get_type(lines[i][1])
@@ -24,8 +29,12 @@ func get_header(lines [][]string) []byte {
 			}
 			constants = append(constants, 255)
 			i++
+		} else if !is_const {
+			constants = []byte{255}
 		}
 		if lines[i][0] == "var:" {
+			variables = []byte{}
+			is_var = true
 			i++
 			for ; lines[i][0] != "global"; i++ {
 				c_type := get_type(lines[i][1])
@@ -39,6 +48,8 @@ func get_header(lines [][]string) []byte {
 			}
 			variables = append(variables, 255)
 			i++
+		} else if !is_var {
+			variables = []byte{255}
 		}
 		if lines[i][0] == "global" {
 			global = append(global, []byte(lines[i][1])...)

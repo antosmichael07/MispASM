@@ -1,9 +1,4 @@
-const:
-    asd i32-362578
-
-var:
-    abc i8-27
-
 global _start
 
 _start
+    add i8-5 i8-5
