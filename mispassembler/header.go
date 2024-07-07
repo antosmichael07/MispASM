@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-func get_header(lines [][]string) []byte {
+func get_header(lines [][]string, var_types *map[string][]byte) []byte {
 	constants := []byte{}
 	variables := []byte{}
 	global := []byte{}
@@ -24,8 +24,10 @@ func get_header(lines [][]string) []byte {
 				constants = append(constants, 0)
 				constants = append(constants, c_type)
 				if type_sizes[c_type] >= 1 {
-					constants = append(constants, value_to_byte[c_type](lines[i][1][strings.Index(lines[i][1], "-")+1:])...)
+					constants = append(constants, value_to_byte[c_type](lines[i][1][strings.Index(lines[i][1], "-")+1:], map[string][]byte{})...)
 				}
+
+				(*var_types)[lines[i][0]] = []byte{12, c_type}
 			}
 			constants = append(constants, 255)
 			i++
@@ -43,8 +45,10 @@ func get_header(lines [][]string) []byte {
 				variables = append(variables, 0)
 				variables = append(variables, c_type)
 				if type_sizes[c_type] >= 1 {
-					variables = append(variables, value_to_byte[c_type](lines[i][1][strings.Index(lines[i][1], "-")+1:])...)
+					variables = append(variables, value_to_byte[c_type](lines[i][1][strings.Index(lines[i][1], "-")+1:], map[string][]byte{})...)
 				}
+
+				(*var_types)[lines[i][0]] = []byte{13, c_type}
 			}
 			variables = append(variables, 255)
 			i++

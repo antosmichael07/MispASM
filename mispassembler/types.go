@@ -49,48 +49,56 @@ func get_type(str string) byte {
 	return types[str[:strings.Index(str, "-")]]
 }
 
-var value_to_byte = [14]func(string) []byte{
-	func(str string) []byte {
+var value_to_byte = [13]func(string, map[string][]byte) []byte{
+	func(str string, _ map[string][]byte) []byte {
 		i, _ := strconv.ParseInt(str, 10, 8)
 		return []byte{byte(i)}
 	},
-	func(str string) []byte {
+	func(str string, _ map[string][]byte) []byte {
 		i, _ := strconv.ParseInt(str, 10, 16)
 		return []byte{byte(i >> 8), byte(i)}
 	},
-	func(str string) []byte {
+	func(str string, _ map[string][]byte) []byte {
 		i, _ := strconv.ParseInt(str, 10, 32)
 		return []byte{byte(i >> 24), byte(i >> 16), byte(i >> 8), byte(i)}
 	},
-	func(str string) []byte {
+	func(str string, _ map[string][]byte) []byte {
 		i, _ := strconv.ParseInt(str, 10, 64)
 		return []byte{byte(i >> 56), byte(i >> 48), byte(i >> 40), byte(i >> 32), byte(i >> 24), byte(i >> 16), byte(i >> 8), byte(i)}
 	},
-	func(str string) []byte {
+	func(str string, _ map[string][]byte) []byte {
 		i, _ := strconv.ParseUint(str, 10, 8)
 		return []byte{byte(i)}
 	},
-	func(str string) []byte {
+	func(str string, _ map[string][]byte) []byte {
 		i, _ := strconv.ParseUint(str, 10, 16)
 		return []byte{byte(i >> 8), byte(i)}
 	},
-	func(str string) []byte {
+	func(str string, _ map[string][]byte) []byte {
 		i, _ := strconv.ParseUint(str, 10, 32)
 		return []byte{byte(i >> 24), byte(i >> 16), byte(i >> 8), byte(i)}
 	},
-	func(str string) []byte {
+	func(str string, _ map[string][]byte) []byte {
 		i, _ := strconv.ParseUint(str, 10, 64)
 		return []byte{byte(i >> 56), byte(i >> 48), byte(i >> 40), byte(i >> 32), byte(i >> 24), byte(i >> 16), byte(i >> 8), byte(i)}
 	},
-	func(str string) []byte {
+	func(str string, _ map[string][]byte) []byte {
 		f, _ := strconv.ParseFloat(str, 32)
 		return []byte{byte(f)}
 	},
-	func(str string) []byte {
+	func(str string, _ map[string][]byte) []byte {
 		f, _ := strconv.ParseFloat(str, 64)
 		return []byte{byte(f)}
 	},
-	func(str string) []byte {
-		return []byte(str)
+	func(str string, _ map[string][]byte) []byte {
+		return append([]byte(str), 0)
+	},
+	func(str string, _ map[string][]byte) []byte {
+		li := strings.LastIndex(str, "-")
+		i, _ := strconv.ParseInt(str[li+1:], 10, 8)
+		return []byte{registers[str[:li]], byte(i)}
+	},
+	func(str string, var_types map[string][]byte) []byte {
+		return append(var_types[str], append([]byte(str), 0)...)
 	},
 }

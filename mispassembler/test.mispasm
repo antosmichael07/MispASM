@@ -1,4 +1,7 @@
 global _start
 
 _start
-    add i8-5 i8-5
+    mov r-s-0 s-HelloWorld!
+    push r-s-0
+    call u8-0
+    pop r-s-0

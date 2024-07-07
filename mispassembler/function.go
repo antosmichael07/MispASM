@@ -1,6 +1,6 @@
 package main
 
-func functions_to_bytes(lines [][]string) []byte {
+func functions_to_bytes(lines [][]string, var_types map[string][]byte) []byte {
 	functions := []byte{}
 
 	for i := range lines {
@@ -8,7 +8,7 @@ func functions_to_bytes(lines [][]string) []byte {
 			functions = append(append(functions, []byte(lines[i][0])...), 0)
 			i++
 			for ; i < len(lines) && lines[i][0][0] != '_'; i++ {
-				functions = append(functions, instruction_to_bytes(lines[i])...)
+				functions = append(functions, instruction_to_bytes(lines[i], var_types)...)
 			}
 			functions = append(functions, 255)
 		}
