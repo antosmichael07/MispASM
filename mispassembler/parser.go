@@ -12,7 +12,7 @@ func split_new_lines(s string) []string {
 	return strings.Split(strings.ReplaceAll(s, "\r", ""), "\n")
 }
 
-func split_file(s string) [][]string {
+func parse_file(s string) [][]string {
 	final := [][]string{}
 
 	lines := split_new_lines(s)

@@ -1,5 +1,9 @@
-wow xd          aaa   5
-dsad   dsd
-             
-dd    a
-    aa
+const:
+    asd i32-362578
+
+var:
+    abc i8-27
+
+global _start
+
+_start
