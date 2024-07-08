@@ -1,16 +1,7 @@
-const:
-    greeting 56.462
-
 global _start
 
 _start
-    mov lf0 greeting
-    push lf0
-    call print
-    pop lf0
-    
-    mov s0 "\nPress Ctrl+C to stop the program\n"
+    mov s0 "Hello World!\n"
     push s0
-    call u8-0
+    call print
     pop s0
-    hlt
