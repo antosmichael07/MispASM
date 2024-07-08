@@ -1,7 +1,7 @@
 global _start
 
 _start
-    mov r-s-0 s-HelloWorld!\n
+    mov r-s-0 s-"Hello World!\n"
     push r-s-0
 
     call u8-0
