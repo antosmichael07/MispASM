@@ -14,6 +14,9 @@ func split_white_spaces(s string) []string {
 
 	for s[0] == ' ' || s[0] == '\n' || s[0] == '\t' || s[0] == '\r' || s[0] == '\v' || s[0] == '\f' {
 		s = s[1:]
+		if len(s) == 0 {
+			return split
+		}
 	}
 
 	for i := 0; i < len(s); i++ {

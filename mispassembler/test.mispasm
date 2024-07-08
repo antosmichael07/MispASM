@@ -3,7 +3,11 @@ global _start
 _start
     mov r-s-0 s-"Hello World!\n"
     push r-s-0
-
     call u8-0
-
     pop r-s-0
+    
+    mov r-s-0 s-"Press Ctrl+C to stop the program\n"
+    push r-s-0
+    call u8-0
+    pop r-s-0
+    hlt

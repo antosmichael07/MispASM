@@ -31,7 +31,7 @@ type Program struct {
 	register_rs    [256]string
 	register_cmp   [2][]byte
 	stack          []stack
-	instructions   [30]func([]byte, []byte, *function, *int, *int)
+	instructions   [instruction_count]func([]byte, []byte, *function, *int, *int)
 	calls          [1]func([]byte, []byte)
 }
 

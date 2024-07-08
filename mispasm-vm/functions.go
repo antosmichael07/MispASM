@@ -44,7 +44,7 @@ func get_functions(data []byte) (global string, funcs map[string]function) {
 	return global, funcs
 }
 
-func run_function(instructions [30]func([]byte, []byte, *function, *int, *int), f function, should_close *bool) {
+func run_function(instructions [instruction_count]func([]byte, []byte, *function, *int, *int), f function, should_close *bool) {
 	for i := 0; i < len(f.instructions); i++ {
 		if *should_close {
 			return

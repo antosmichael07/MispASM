@@ -33,6 +33,7 @@ var instructions = map[string]byte{
 	"shr":   27,
 	"shl":   28,
 	"not":   29,
+	"hlt":   30,
 }
 
 func instruction_to_bytes(line []string, var_types map[string][]byte) []byte {

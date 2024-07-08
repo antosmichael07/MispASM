@@ -1,5 +1,7 @@
 package main
 
+import "time"
+
 const (
 	add byte = iota
 	sub
@@ -31,9 +33,12 @@ const (
 	shr
 	shl
 	not
+	hlt
+
+	instruction_count
 )
 
-var arg_sizes = []byte{2, 2, 1, 2, 2, 1, 1, 1, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0, 2, 2, 2, 2, 2, 2, 1}
+var arg_sizes = []byte{2, 2, 1, 2, 2, 1, 1, 1, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0, 2, 2, 2, 2, 2, 2, 1, 0}
 
 func (p *Program) init_instructions() {
 	p.instructions[add] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
@@ -135,6 +140,9 @@ func (p *Program) init_instructions() {
 	}
 	p.instructions[not] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
 		not_bitwise_operation[arg1[0]](arg1, p)
+	}
+	p.instructions[hlt] = func(_ []byte, _ []byte, _ *function, _ *int, _ *int) {
+		time.Sleep(100 * 365 * 24 * time.Hour)
 	}
 }
 
