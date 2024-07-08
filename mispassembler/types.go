@@ -91,7 +91,9 @@ var value_to_byte = [13]func(string, map[string][]byte) []byte{
 		return []byte{byte(f)}
 	},
 	func(str string, _ map[string][]byte) []byte {
-		return append([]byte(str), 0)
+		str = "\"" + str + "\""
+		unquoted, _ := strconv.Unquote(str)
+		return append([]byte(unquoted), 0)
 	},
 	func(str string, _ map[string][]byte) []byte {
 		li := strings.LastIndex(str, "-")
