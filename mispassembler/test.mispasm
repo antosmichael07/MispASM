@@ -1,15 +1,15 @@
 const:
-    greeting "Hello World!\n"
+    greeting 56.462
 
 global _start
 
 _start
-    mov s0 greeting
-    push s0
-    call u8-0
-    pop s0
+    mov lf0 greeting
+    push lf0
+    call print
+    pop lf0
     
-    mov s0 "Press Ctrl+C to stop the program\n"
+    mov s0 "\nPress Ctrl+C to stop the program\n"
     push s0
     call u8-0
     pop s0

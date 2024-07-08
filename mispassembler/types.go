@@ -1,30 +1,10 @@
 package main
 
 import (
+	"math"
 	"strconv"
 	"strings"
 )
-
-/*
-const (
-
-	t_int8 byte = iota
-	t_int16
-	t_int32
-	t_int64
-	t_uint8
-	t_uint16
-	t_uint32
-	t_uint64
-	t_float32
-	t_float64
-	t_string
-	t_reg
-	t_const
-	t_var
-
-)
-*/
 
 var types = map[string]byte{
 	"i8":  0,
@@ -46,6 +26,12 @@ func get_type(str string, var_types map[string][]byte) byte {
 		return 10
 	} else if strings.Contains(str, "-") {
 		return types[str[:strings.Index(str, "-")]]
+	} else if str[0] >= '0' && str[0] <= '9' {
+		if strings.Contains(str, ".") {
+			return 8
+		} else {
+			return 2
+		}
 	} else {
 		if ok, _, _ := is_register(str); ok {
 			return 11
@@ -60,7 +46,13 @@ func value_to_byte(str string, var_types map[string][]byte) []byte {
 		unquoted, _ := strconv.Unquote(str)
 		return append([]byte(unquoted), 0)
 	} else if strings.Contains(str, "-") {
-		return value_to_byte_arr[get_type(str, var_types)](str)
+		return value_to_byte_arr[get_type(str, var_types)](str[strings.Index(str, "-")+1:])
+	} else if str[0] >= '0' && str[0] <= '9' {
+		if strings.Contains(str, ".") {
+			return value_to_byte_arr[8](str)
+		} else {
+			return value_to_byte_arr[2](str)
+		}
 	} else {
 		if ok, reg, i := is_register(str); ok {
 			return []byte{registers[reg], i}
@@ -105,10 +97,10 @@ var value_to_byte_arr = [10]func(string) []byte{
 	},
 	func(str string) []byte {
 		f, _ := strconv.ParseFloat(str, 32)
-		return []byte{byte(f)}
+		return []byte{byte(math.Float32bits(float32(f))), byte(math.Float32bits(float32(f)) >> 8), byte(math.Float32bits(float32(f)) >> 16), byte(math.Float32bits(float32(f)) >> 24)}
 	},
 	func(str string) []byte {
 		f, _ := strconv.ParseFloat(str, 64)
-		return []byte{byte(f)}
+		return []byte{byte(math.Float64bits(f)), byte(math.Float64bits(f) >> 8), byte(math.Float64bits(f) >> 16), byte(math.Float64bits(f) >> 24), byte(math.Float64bits(f) >> 32), byte(math.Float64bits(f) >> 40), byte(math.Float64bits(f) >> 48), byte(math.Float64bits(f) >> 56)}
 	},
 }

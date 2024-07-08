@@ -1,5 +1,10 @@
 package main
 
+import (
+	"encoding/binary"
+	"math"
+)
+
 var convert_to_value = [14]func([]byte, Program) any{
 	func(data []byte, _ Program) any { return byte_to_int8(data[1]) },
 	func(data []byte, _ Program) any { return bytes_to_int16(data[1:]) },
@@ -49,12 +54,12 @@ func bytes_to_uint64(b []byte) uint64 {
 	return uint64(b[0])<<56 | uint64(b[1])<<48 | uint64(b[2])<<40 | uint64(b[3])<<32 | uint64(b[4])<<24 | uint64(b[5])<<16 | uint64(b[6])<<8 | uint64(b[7])
 }
 
-func bytes_to_float32(b []byte) float32 {
-	return float32(bytes_to_int32(b))
+func bytes_to_float32(bytes []byte) float32 {
+	return math.Float32frombits(binary.LittleEndian.Uint32(bytes))
 }
 
-func bytes_to_float64(b []byte) float64 {
-	return float64(bytes_to_int64(b))
+func bytes_to_float64(bytes []byte) float64 {
+	return math.Float64frombits(binary.LittleEndian.Uint64(bytes))
 }
 
 func bytes_to_string(b []byte) string {

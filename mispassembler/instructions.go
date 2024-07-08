@@ -36,6 +36,10 @@ var instructions = map[string]byte{
 
 func instruction_to_bytes(line []string, var_types map[string][]byte) []byte {
 	instruction := []byte{instructions[line[0]]}
+	if instruction[0] == 5 && len(line[1]) >= 3 && line[1][0:3] != "u8-" {
+		instruction = append(instruction, calls[line[1]]...)
+		return instruction
+	}
 	for i := 1; i < len(line); i++ {
 		instruction = append(append(instruction, get_type(line[i], var_types)), value_to_byte(line[i], var_types)...)
 	}
