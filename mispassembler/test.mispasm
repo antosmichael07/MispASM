@@ -1,13 +1,16 @@
+const:
+    greeting "Hello World!\n"
+
 global _start
 
 _start
-    mov r-s-0 s-"Hello World!\n"
-    push r-s-0
+    mov s0 greeting
+    push s0
     call u8-0
-    pop r-s-0
+    pop s0
     
-    mov r-s-0 s-"Press Ctrl+C to stop the program\n"
-    push r-s-0
+    mov s0 "Press Ctrl+C to stop the program\n"
+    push s0
     call u8-0
-    pop r-s-0
+    pop s0
     hlt

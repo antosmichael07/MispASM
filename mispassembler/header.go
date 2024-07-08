@@ -1,9 +1,5 @@
 package main
 
-import (
-	"strings"
-)
-
 func get_header(lines [][]string, var_types *map[string][]byte) []byte {
 	constants := []byte{}
 	variables := []byte{}
@@ -18,14 +14,12 @@ func get_header(lines [][]string, var_types *map[string][]byte) []byte {
 			is_const = true
 			i++
 			for ; lines[i][0] != "var:" && lines[i][0] != "global"; i++ {
-				c_type := get_type(lines[i][1])
+				c_type := get_type(lines[i][1], *var_types)
 				constants = append(constants, c_type)
 				constants = append(constants, []byte(lines[i][0])...)
 				constants = append(constants, 0)
 				constants = append(constants, c_type)
-				if type_sizes[c_type] >= 1 {
-					constants = append(constants, value_to_byte[c_type](lines[i][1][strings.Index(lines[i][1], "-")+1:], map[string][]byte{})...)
-				}
+				constants = append(constants, value_to_byte(lines[i][1], map[string][]byte{})...)
 
 				(*var_types)[lines[i][0]] = []byte{12, c_type}
 			}
@@ -39,13 +33,13 @@ func get_header(lines [][]string, var_types *map[string][]byte) []byte {
 			is_var = true
 			i++
 			for ; lines[i][0] != "global"; i++ {
-				c_type := get_type(lines[i][1])
+				c_type := get_type(lines[i][1], *var_types)
 				variables = append(variables, c_type)
 				variables = append(variables, []byte(lines[i][0])...)
 				variables = append(variables, 0)
 				variables = append(variables, c_type)
 				if type_sizes[c_type] >= 1 {
-					variables = append(variables, value_to_byte[c_type](lines[i][1][strings.Index(lines[i][1], "-")+1:], map[string][]byte{})...)
+					variables = append(variables, value_to_byte(lines[i][1], map[string][]byte{})...)
 				}
 
 				(*var_types)[lines[i][0]] = []byte{13, c_type}

@@ -1,5 +1,7 @@
 package main
 
+import "strconv"
+
 var registers = map[string]byte{
 	"bi":    0,
 	"si":    1,
@@ -23,4 +25,16 @@ var registers = map[string]byte{
 	"rlf":   19,
 	"rllf":  20,
 	"rs":    21,
+}
+
+func is_register(str string) (bool, string, byte) {
+	reg := ""
+	i := 0
+	for ; i < len(str) && str[i] >= 'a' && str[i] <= 'z'; i++ {
+		reg += string(str[i])
+	}
+	index, _ := strconv.ParseUint(str[i:], 10, 8)
+
+	_, ok := registers[reg]
+	return ok, reg, byte(index)
 }
