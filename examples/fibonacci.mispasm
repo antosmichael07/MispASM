@@ -5,7 +5,7 @@ _start
     mov lli1 i64-1
     mov s0 " "
 
-    label
+    label start
 
     push lli0
     push s0
@@ -18,6 +18,6 @@ _start
     mov lli1 rlli0
 
     cmp lli0 i64--1
-    jl u8-1 u8-0
+    jl end start
 
-    label
+    label end

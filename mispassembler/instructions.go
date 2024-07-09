@@ -34,11 +34,18 @@ var instructions = map[string]byte{
 	"hlt":   30,
 }
 
-func instruction_to_bytes(line []string, var_types map[string][]byte) []byte {
+func instruction_to_bytes(line []string, var_types map[string][]byte, labels map[string]string) []byte {
 	instruction := []byte{instructions[line[0]]}
 	if instruction[0] == 5 && len(line[1]) >= 3 && line[1][0:3] != "u8-" {
 		instruction = append(instruction, calls[line[1]]...)
 		return instruction
+	}
+	if instruction[0] == 10 {
+		line[1] = labels[line[1]]
+	}
+	if instruction[0] >= 13 && instruction[0] <= 18 {
+		line[1] = labels[line[1]]
+		line[2] = labels[line[2]]
 	}
 	for i := 1; i < len(line); i++ {
 		instruction = append(append(instruction, get_type(line[i], var_types)), value_to_byte(line[i], var_types)...)
