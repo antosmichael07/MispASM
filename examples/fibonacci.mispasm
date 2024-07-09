@@ -1,0 +1,23 @@
+global _start
+
+_start
+    mov lli0 i64-0
+    mov lli1 i64-1
+    mov s0 " "
+
+    label
+
+    push lli0
+    push s0
+    call print
+    pop s0
+    pop lli0
+
+    add lli0 lli1
+    mov lli0 lli1
+    mov lli1 rlli0
+
+    cmp lli0 i64--1
+    jl u8-1 u8-0
+
+    label

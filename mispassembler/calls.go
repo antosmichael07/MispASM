@@ -1,5 +1,5 @@
 package main
 
 var calls = map[string][]byte{
-	"print": {4, 0},
+	"print": {5, 0, 0},
 }

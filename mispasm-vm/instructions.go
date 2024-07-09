@@ -57,7 +57,7 @@ func (p *Program) init_instructions() {
 		div_math_operation[arg1[0]](arg1, arg2, p)
 	}
 	p.instructions[call] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
-		p.calls[arg1[1]]([]byte{}, []byte{})
+		p.calls[arg1[1]][arg1[2]]([]byte{}, []byte{})
 	}
 	p.instructions[push] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
 		stack_push(arg1[1], int(arg1[2]), p)

@@ -32,7 +32,7 @@ type Program struct {
 	register_cmp   [2][]byte
 	stack          []stack
 	instructions   [instruction_count]func([]byte, []byte, *function, *int, *int)
-	calls          [1]func([]byte, []byte)
+	calls          [255][1]func([]byte, []byte)
 }
 
 func NewProgram(data []byte) Program {

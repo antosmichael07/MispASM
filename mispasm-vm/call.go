@@ -9,7 +9,7 @@ const (
 )
 
 func (p *Program) init_calls() {
-	p.calls[print] = func(arg1 []byte, arg2 []byte) {
+	p.calls[0][print] = func(arg1 []byte, arg2 []byte) {
 		fmt.Print(p.sprint_stack())
 	}
 }
