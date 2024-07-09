@@ -5,11 +5,15 @@ import "fmt"
 func functions_to_bytes(lines [][]string, var_types map[string][]byte) []byte {
 	functions := []byte{}
 	labels := map[string]string{}
+	label_count := 0
 
 	for i := range lines {
 		if lines[i][0] == "label" {
-			labels[lines[i][1]] = fmt.Sprintf("u8-%d", len(labels))
-			lines[i] = []string{lines[i][0]}
+			if len(lines[i]) > 1 {
+				labels[lines[i][1]] = fmt.Sprintf("u8-%d", label_count)
+				lines[i] = []string{lines[i][0]}
+			}
+			label_count++
 		}
 	}
 
