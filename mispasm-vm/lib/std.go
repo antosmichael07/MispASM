@@ -1,5 +1,13 @@
 package main
 
+/*
+#cgo CFLAGS: -I.
+
+typedef struct {
+	void* data;
+	int len;
+} response;
+*/
 import "C"
 import (
 	"encoding/binary"
@@ -25,10 +33,15 @@ var calls = map[string]func([]stack){
 }
 
 //export Callstd
-func Callstd(call *C.char, data unsafe.Pointer, val_len C.int, data_len C.int) {
+func Callstd(call *C.char, data unsafe.Pointer, val_len C.int, data_len C.int) C.response {
 	stack_arr := decode_stack(data, val_len, data_len)
 
 	calls[C.GoString(call)](stack_arr)
+
+	return C.response{
+		data: unsafe.Pointer(C.CBytes([]byte{1, 2, 3})),
+		len:  C.int(3),
+	}
 }
 
 func decode_stack(c_data unsafe.Pointer, value_length C.int, length C.int) []stack {

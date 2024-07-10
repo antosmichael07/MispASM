@@ -13,14 +13,28 @@ FARPROC get_proc(HINSTANCE h, const char* procname) {
     return GetProcAddress(h, procname);
 }
 
-typedef void (*callFunc)(const char*, void*, int, int);
+typedef struct {
+	void* data;
+	int len;
+} response;
 
-void bridge_call(callFunc f, const char* call, void* data, int val_len, int data_len) {
-	f(call, data, val_len, data_len);
+typedef response (*callFunc)(const char*, void*, int, int);
+
+response bridge_call(callFunc f, const char* call, void* data, int val_len, int data_len) {
+	return f(call, data, val_len, data_len);
+}
+
+void* get_response_data(response r) {
+	return r.data;
+}
+
+int get_response_len(response r) {
+	return r.len;
 }
 */
 import "C"
 import (
+	"fmt"
 	"strings"
 	"unsafe"
 )
@@ -48,7 +62,10 @@ func (p Program) is_lib_loaded(lib string) bool {
 
 func (p Program) call(lib string, cal string) {
 	data, val_len, data_len := encode_stack(p.stack)
-	C.bridge_call(p.libs[lib], C.CString(cal), data, val_len, data_len)
+	c_res := C.bridge_call(p.libs[lib], C.CString(cal), data, val_len, data_len)
+	res := C.GoBytes(C.get_response_data(c_res), C.get_response_len(c_res))
+
+	fmt.Println(res)
 }
 
 func encode_stack(s []stack) (unsafe.Pointer, C.int, C.int) {
