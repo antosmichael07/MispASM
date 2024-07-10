@@ -34,7 +34,8 @@ int get_response_len(response r) {
 */
 import "C"
 import (
-	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 	"unsafe"
 )
@@ -44,7 +45,9 @@ func (p *Program) load_lib(lib string) {
 		p.libs = make(map[string]C.callFunc)
 	}
 
-	library := C.load_library(C.CString("./lib/" + lib + ".misplib"))
+	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+
+	library := C.load_library(C.CString(dir + "\\lib\\" + lib + ".misplib"))
 	proc := C.get_proc(library, C.CString("Call"+lib))
 	fun := C.callFunc(proc)
 
@@ -62,10 +65,8 @@ func (p Program) is_lib_loaded(lib string) bool {
 
 func (p Program) call(lib string, cal string) {
 	data, val_len, data_len := encode_stack(p.stack)
-	c_res := C.bridge_call(p.libs[lib], C.CString(cal), data, val_len, data_len)
-	res := C.GoBytes(C.get_response_data(c_res), C.get_response_len(c_res))
-
-	fmt.Println(res)
+	/*c_res := */ C.bridge_call(p.libs[lib], C.CString(cal), data, val_len, data_len)
+	//res := C.GoBytes(C.get_response_data(c_res), C.get_response_len(c_res))
 }
 
 func encode_stack(s []stack) (unsafe.Pointer, C.int, C.int) {
@@ -92,7 +93,7 @@ func (p *Program) init_calls() {
 			arg1, _, _, _, arg_size := get_args(f.instructions, j)
 			if f.instructions[j] == call {
 				lib := convert_to_value[t_string](arg1[:len(arg1)-1], *p).(string)[:strings.Index(convert_to_value[t_string](arg1[:len(arg1)-1], *p).(string), ".")]
-				if !p.is_lib_loaded(lib) {
+				if arg1[1] != '#' == !p.is_lib_loaded(lib) {
 					p.load_lib(lib)
 				}
 			}

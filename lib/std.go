@@ -39,8 +39,8 @@ func Callstd(call *C.char, data unsafe.Pointer, val_len C.int, data_len C.int) C
 	calls[C.GoString(call)](stack_arr)
 
 	return C.response{
-		data: unsafe.Pointer(C.CBytes([]byte{1, 2, 3})),
-		len:  C.int(3),
+		data: unsafe.Pointer(C.CBytes([]byte{})),
+		len:  C.int(0),
 	}
 }
 
@@ -54,8 +54,8 @@ func decode_stack(c_data unsafe.Pointer, value_length C.int, length C.int) []sta
 	offset := int(value_length * 2)
 	for i := 0; i < int(value_length); i++ {
 		size := get_size(data[offset:])
-		data_arr = append(data_arr, convert_to_value[data[offset]](data[offset:offset+size]))
-		offset += size
+		data_arr = append(data_arr, convert_to_value[data[offset]](data[offset:offset+size+1]))
+		offset += size + 1
 	}
 
 	stack_arr := []stack{}
@@ -72,10 +72,10 @@ func get_size(data []byte) int {
 	} else {
 		size := 0
 		for i := 0; i < len(data); i++ {
-			size++
 			if data[i] == 0 {
 				break
 			}
+			size++
 		}
 		return size
 	}
@@ -138,7 +138,7 @@ func bytes_to_float64(bytes []byte) float64 {
 }
 
 func bytes_to_string(b []byte) string {
-	return string(b)
+	return string(b[:len(b)-1])
 }
 
 func main() {}

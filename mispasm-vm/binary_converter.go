@@ -121,5 +121,5 @@ func float64_to_bytes(f float64) []byte {
 }
 
 func string_to_bytes(s string) []byte {
-	return append([]byte(s), 0)
+	return []byte(s)
 }

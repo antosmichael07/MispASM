@@ -9,7 +9,7 @@ _start
 
     push lli0
     push s0
-    call print
+    call "std.print"
     pop s0
     pop lli0
 
