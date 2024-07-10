@@ -92,7 +92,7 @@ func (p *Program) init_calls() {
 			arg1, _, _, _, arg_size := get_args(f.instructions, j)
 			if f.instructions[j] == call {
 				lib := convert_to_value[t_string](arg1[:len(arg1)-1], *p).(string)[:strings.Index(convert_to_value[t_string](arg1[:len(arg1)-1], *p).(string), ".")]
-				if arg1[1] != '#' && !p.is_lib_loaded(lib) {
+				if !p.is_lib_loaded(lib) {
 					p.load_lib(lib)
 				}
 			}
