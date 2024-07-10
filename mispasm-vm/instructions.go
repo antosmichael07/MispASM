@@ -60,10 +60,10 @@ func (p *Program) init_instructions() {
 		p.calls[arg1[1]][arg1[2]]()
 	}
 	p.instructions[push] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
-		stack_push(arg1[1], int(arg1[2]), p)
+		stack_push(arg1[1], arg1[2], p)
 	}
 	p.instructions[pop] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
-		stack_pop(arg1[1], int(arg1[2]), p)
+		stack_pop(arg1[1], arg1[2], p)
 	}
 	p.instructions[mov] = func(arg1 []byte, arg2 []byte, _ *function, _ *int, _ *int) {
 		if arg2[0] < t_reg {

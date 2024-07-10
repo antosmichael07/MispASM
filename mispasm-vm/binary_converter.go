@@ -17,7 +17,7 @@ var convert_to_value = [14]func([]byte, Program) any{
 	func(data []byte, _ Program) any { return bytes_to_float32(data[1:]) },
 	func(data []byte, _ Program) any { return bytes_to_float64(data[1:]) },
 	func(data []byte, _ Program) any { return bytes_to_string(data[1:]) },
-	func(data []byte, p Program) any { return register_get[data[1]](int(data[2]), p) },
+	func(data []byte, p Program) any { return register_get[data[1]](data[2], p) },
 	func(data []byte, p Program) any { return p.get_const_value(data) },
 	func(data []byte, p Program) any { return p.get_var_value(data) },
 }

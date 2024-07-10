@@ -1,5 +1,11 @@
 package main
 
+/*
+#cgo CFLAGS: -I.
+typedef void (*callFunc)(const char*, void*, int, int);
+*/
+import "C"
+
 type Program struct {
 	should_close   bool
 	data           []byte
@@ -33,6 +39,7 @@ type Program struct {
 	stack          []stack
 	instructions   [instruction_count]func([]byte, []byte, *function, *int, *int)
 	calls          [255][2]func()
+	libs           map[string]C.callFunc
 }
 
 func NewProgram(data []byte) Program {
