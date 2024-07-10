@@ -47,7 +47,7 @@ func (p *Program) load_lib(lib string) {
 
 	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 
-	library := C.load_library(C.CString(dir + "\\lib\\" + lib + ".misplib"))
+	library := C.load_library(C.CString(dir + "/../lib/" + lib + ".misplib"))
 	proc := C.get_proc(library, C.CString("Call"+lib))
 	fun := C.callFunc(proc)
 
