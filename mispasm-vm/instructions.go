@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 const (
 	add byte = iota
@@ -57,7 +60,8 @@ func (p *Program) init_instructions() {
 		div_math_operation[arg1[0]](arg1, arg2, p)
 	}
 	p.instructions[call] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
-		p.calls[arg1[1]][arg1[2]]()
+		cal := convert_to_value[t_string](arg1[:len(arg1)-1], *p).(string)
+		p.call(cal[:strings.Index(cal, ".")], cal[strings.Index(cal, ".")+1:])
 	}
 	p.instructions[push] = func(arg1 []byte, _ []byte, _ *function, _ *int, _ *int) {
 		stack_push(arg1[1], arg1[2], p)

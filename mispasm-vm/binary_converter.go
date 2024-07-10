@@ -66,7 +66,6 @@ func bytes_to_string(b []byte) string {
 	return string(b)
 }
 
-/*
 var convert_to_bytes = [11]func(byte, any) []byte{
 	func(t byte, data any) []byte { return []byte{t, int8_to_byte(data.(int8))} },
 	func(t byte, data any) []byte { return append([]byte{t}, int16_to_bytes(data.(int16))...) },
@@ -122,6 +121,5 @@ func float64_to_bytes(f float64) []byte {
 }
 
 func string_to_bytes(s string) []byte {
-	return []byte(s)
+	return append([]byte(s), 0)
 }
-*/

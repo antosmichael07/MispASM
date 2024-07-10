@@ -1,28 +1,5 @@
 package main
 
-func (p *Program) init_calls() {
-	for _, f := range p.funcs {
-		for j := 0; j < len(f.instructions); j++ {
-			arg1, _, _, _, arg_size := get_args(f.instructions, j)
-			if f.instructions[j] == call {
-				lib := convert_to_value[t_string](arg1[:len(arg1)-1], *p).(string)
-				if arg1[1] != '#' && !p.is_lib_loaded(lib) {
-					p.load_lib(lib)
-				}
-			}
-			j += arg_size
-		}
-	}
-}
-
-/*func (p *Program) sprint_stack() string {
-	msg := ""
-	for _, v := range p.stack {
-		msg = fmt.Sprint(msg, v.data)
-	}
-	return msg
-}*/
-
 /*var scanf_func = [11]func(*Program){
 	func(p *Program) {
 		var data int8
