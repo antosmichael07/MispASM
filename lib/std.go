@@ -5,7 +5,8 @@ package main
 
 typedef struct {
 	void* data;
-	int len;
+	int val_len;
+	int data_len;
 } response;
 */
 import "C"
@@ -16,19 +17,46 @@ import (
 	"unsafe"
 )
 
+const (
+	register_bi byte = iota
+	register_si
+	register_li
+	register_lli
+	register_bui
+	register_sui
+	register_lui
+	register_llui
+	register_lf
+	register_llf
+	register_s
+	register_rbi
+	register_rsi
+	register_rli
+	register_rlli
+	register_rbui
+	register_rsui
+	register_rlui
+	register_rllui
+	register_rlf
+	register_rllf
+	register_rs
+)
+
 type stack struct {
 	name  byte
 	index byte
 	data  any
 }
 
-var calls = map[string]func([]stack){
-	"print": func(s []stack) {
+var calls = map[string]func([]stack) []stack{
+	"print": func(s []stack) (res []stack) {
 		msg := ""
 		for _, v := range s {
 			msg = fmt.Sprint(msg, v.data)
 		}
 		fmt.Print(msg)
+
+		return res
 	},
 }
 
@@ -36,12 +64,13 @@ var calls = map[string]func([]stack){
 func Callstd(call *C.char, data unsafe.Pointer, val_len C.int, data_len C.int) C.response {
 	stack_arr := decode_stack(data, val_len, data_len)
 
-	calls[C.GoString(call)](stack_arr)
+	res := calls[C.GoString(call)](stack_arr)
 
-	return C.response{
-		data: unsafe.Pointer(C.CBytes([]byte{})),
-		len:  C.int(0),
-	}
+	return encode_stack(res)
+}
+
+func stack_push(s *[]stack, name byte, index byte, data any) {
+	*s = append(*s, stack{name, index, data})
 }
 
 func decode_stack(c_data unsafe.Pointer, value_length C.int, length C.int) []stack {
@@ -64,6 +93,24 @@ func decode_stack(c_data unsafe.Pointer, value_length C.int, length C.int) []sta
 	}
 
 	return stack_arr
+}
+
+func encode_stack(s []stack) C.response {
+	data := []byte{}
+	value_length := C.int(0)
+
+	for i := 0; i < len(s); i++ {
+		data = append(data, s[i].name)
+		value_length++
+	}
+	for i := 0; i < len(s); i++ {
+		data = append(data, s[i].index)
+	}
+	for i := 0; i < len(s); i++ {
+		data = append(data, convert_to_bytes[s[i].name%11](s[i].name%11, s[i].data)...)
+	}
+
+	return C.response{C.CBytes(data), C.int(value_length), C.int(len(data))}
 }
 
 func get_size(data []byte) int {
@@ -139,6 +186,64 @@ func bytes_to_float64(bytes []byte) float64 {
 
 func bytes_to_string(b []byte) string {
 	return string(b[:len(b)-1])
+}
+
+var convert_to_bytes = [11]func(byte, any) []byte{
+	func(t byte, data any) []byte { return []byte{t, int8_to_byte(data.(int8))} },
+	func(t byte, data any) []byte { return append([]byte{t}, int16_to_bytes(data.(int16))...) },
+	func(t byte, data any) []byte { return append([]byte{t}, int32_to_bytes(data.(int32))...) },
+	func(t byte, data any) []byte { return append([]byte{t}, int64_to_bytes(data.(int64))...) },
+	func(t byte, data any) []byte { return []byte{t, uint8_to_byte(data.(uint8))} },
+	func(t byte, data any) []byte { return append([]byte{t}, uint16_to_bytes(data.(uint16))...) },
+	func(t byte, data any) []byte { return append([]byte{t}, uint32_to_bytes(data.(uint32))...) },
+	func(t byte, data any) []byte { return append([]byte{t}, uint64_to_bytes(data.(uint64))...) },
+	func(t byte, data any) []byte { return append([]byte{t}, float32_to_bytes(data.(float32))...) },
+	func(t byte, data any) []byte { return append([]byte{t}, float64_to_bytes(data.(float64))...) },
+	func(t byte, data any) []byte { return append([]byte{t}, string_to_bytes(data.(string))...) },
+}
+
+func int8_to_byte(i int8) byte {
+	return byte(i)
+}
+
+func int16_to_bytes(i int16) []byte {
+	return []byte{byte(i >> 8), byte(i)}
+}
+
+func int32_to_bytes(i int32) []byte {
+	return []byte{byte(i >> 24), byte(i >> 16), byte(i >> 8), byte(i)}
+}
+
+func int64_to_bytes(i int64) []byte {
+	return []byte{byte(i >> 56), byte(i >> 48), byte(i >> 40), byte(i >> 32), byte(i >> 24), byte(i >> 16), byte(i >> 8), byte(i)}
+}
+
+func uint8_to_byte(i uint8) byte {
+	return byte(i)
+}
+
+func uint16_to_bytes(i uint16) []byte {
+	return []byte{byte(i >> 8), byte(i)}
+}
+
+func uint32_to_bytes(i uint32) []byte {
+	return []byte{byte(i >> 24), byte(i >> 16), byte(i >> 8), byte(i)}
+}
+
+func uint64_to_bytes(i uint64) []byte {
+	return []byte{byte(i >> 56), byte(i >> 48), byte(i >> 40), byte(i >> 32), byte(i >> 24), byte(i >> 16), byte(i >> 8), byte(i)}
+}
+
+func float32_to_bytes(f float32) []byte {
+	return int32_to_bytes(int32(f))
+}
+
+func float64_to_bytes(f float64) []byte {
+	return int64_to_bytes(int64(f))
+}
+
+func string_to_bytes(s string) []byte {
+	return append([]byte(s), 0)
 }
 
 func main() {}

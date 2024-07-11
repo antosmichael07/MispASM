@@ -63,7 +63,7 @@ func bytes_to_float64(bytes []byte) float64 {
 }
 
 func bytes_to_string(b []byte) string {
-	return string(b)
+	return string(b[:len(b)-1])
 }
 
 var convert_to_bytes = [11]func(byte, any) []byte{
@@ -121,5 +121,5 @@ func float64_to_bytes(f float64) []byte {
 }
 
 func string_to_bytes(s string) []byte {
-	return []byte(s)
+	return append([]byte(s), 0)
 }
