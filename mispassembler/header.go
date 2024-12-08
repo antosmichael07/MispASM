@@ -38,9 +38,7 @@ func get_header(lines [][]string, var_types *map[string][]byte) []byte {
 				variables = append(variables, []byte(lines[i][0])...)
 				variables = append(variables, 0)
 				variables = append(variables, c_type)
-				if type_sizes[c_type] >= 1 {
-					variables = append(variables, value_to_byte(lines[i][1], map[string][]byte{})...)
-				}
+				variables = append(variables, value_to_byte(lines[i][1], map[string][]byte{})...)
 
 				(*var_types)[lines[i][0]] = []byte{13, c_type}
 			}

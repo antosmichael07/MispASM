@@ -1,10 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"os"
 )
 
 func main() {
+	if len(os.Args) < 3 {
+		fmt.Printf("Usage: %s <destination> <name>", os.Args[0])
+		os.Exit(1)
+	}
+
 	dest := os.Args[1]
 	name := os.Args[2]
 

@@ -19,8 +19,6 @@ var types = map[string]byte{
 	"f64": 9,
 }
 
-var type_sizes = [14]byte{1, 2, 4, 8, 1, 2, 4, 8, 4, 8, 0, 0, 0, 0}
-
 func get_type(str string, var_types map[string][]byte) byte {
 	if str[0] == '"' {
 		return 10

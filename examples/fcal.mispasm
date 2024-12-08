@@ -1,0 +1,20 @@
+const:
+    hello "Hello World!\n"
+
+var:
+    bye "Goodbye!\n"
+
+global _start
+
+_start
+    mov s0 hello
+    fcal "_print_s0"
+
+    mov s0 bye
+    fcal "_print_s0"
+
+_print_s0
+    push s0
+    call "std.print"
+    pop s0
+    ret

@@ -1,0 +1,17 @@
+const:
+    hello "Hello "
+
+var:
+    world "World!\n"
+
+global _start
+
+_start
+    mov s0 hello
+    mov s1 world
+    
+    push s0
+    push s1
+    call "std.print"
+    pop s1
+    pop s0

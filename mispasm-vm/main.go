@@ -6,6 +6,11 @@ import (
 )
 
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Printf("Usage: %s <executable>\n", os.Args[0])
+		os.Exit(1)
+	}
+
 	program := NewProgram(read_exec(os.Args[1]))
 	program.Run()
 }
