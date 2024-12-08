@@ -3,11 +3,15 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
 	if len(os.Args) < 3 {
-		fmt.Printf("Usage: %s <destination> <name>", os.Args[0])
+		fmt.Printf("Usage: %s <destination> <name>\n", os.Args[0])
+		os.Exit(1)
+	} else if strings.ToLower(os.Args[2]) == "lib" {
+		fmt.Printf("Name cannot be '%s'\n", os.Args[2])
 		os.Exit(1)
 	}
 
