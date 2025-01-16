@@ -1,0 +1,8 @@
+global _start
+
+_start
+    mov s0 "Hello World!"
+    
+    push s0
+    call "std.print"
+    pop s0
