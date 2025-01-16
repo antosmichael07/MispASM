@@ -51,6 +51,14 @@ func Callstd(call *C.char, data unsafe.Pointer, val_len C.int, data_len C.int) C
 func stack_push(s *[]stack, reg byte, index byte, data any) {
 	*s = append(*s, stack{reg, index, data})
 }
+func stack_pop(s *[]stack, reg byte, index byte) {
+	for i := range (*s) {
+		if (*s)[i].name == reg && (*s)[i].index == index {
+			*s = append((*s)[:i], (*s)[i+1:]...)
+			break
+		}
+	}
+}
 func decode_stack(c_data unsafe.Pointer, value_length C.int, length C.int) []stack {
 	data := C.GoBytes(c_data, length)
 	name_arr := data[:value_length]
